@@ -9,10 +9,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { User as UserModel } from '@prisma/client';
-import { UserService } from './user/user.service';
-import { CreateUserDto } from './user/user.dtos';
-import { AuthService } from './auth/auth.service';
-import { AuthGuard } from './auth/auth.guard';
+import { AuthService } from './modules/auth/auth.service';
+import { AuthGuard } from './modules/auth/auth.guard';
+import { UserService } from './modules/user/user.service';
+import { CreateUserDto } from './modules/user/user.dtos';
 
 @Controller()
 export class AppController {
