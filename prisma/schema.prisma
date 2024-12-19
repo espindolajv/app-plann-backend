@@ -42,7 +42,7 @@ model Task {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   checked     Boolean  @default(false)
-  priority    Priority
+  priority    Priority @default(low)
   description String?
 
   list        List     @relation("ListTask", fields: [listId], references: [id])

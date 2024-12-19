@@ -21,11 +21,13 @@ export class AppController {
     private readonly authService: AuthService,
   ) {}
 
+  //Create user
   @Post('signup')
   async signUp(@Body() userData: CreateUserDto): Promise<UserModel> {
     return this.userService.createUser(userData);
   }
 
+  //Login user
   @Post('signin')
   @HttpCode(HttpStatus.OK)
   async signIn(
