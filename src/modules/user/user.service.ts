@@ -9,14 +9,32 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async createUser(data: Prisma.UserCreateInput): Promise<User> {
-    const hashPassword = await bcrypt.hash(data.password, 10);
+    try {
+      const hashPassword = await bcrypt.hash(data.password, 10);
 
-    return this.prisma.user.create({
-      data: {
-        ...data,
-        password: hashPassword,
-      },
-    });
+      const user = await this.prisma.user.create({
+        data: {
+          ...data,
+          password: hashPassword,
+        },
+      });
+
+      return user;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new HttpException(
+            'This email is already in use. Please use another email.',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+      }
+
+      throw new HttpException(
+        'Error creating user.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async updateUser(updateUserData: {
