@@ -7,10 +7,7 @@ import { Prisma, Task } from '@prisma/client';
 export class TaskService {
   constructor(private prisma: PrismaService) {}
 
-  async createTask(
-    data: CreateTaskDto,
-    listId: string,
-  ): Promise<{ message: string; task: Task }> {
+  async createTask(data: CreateTaskDto, listId: string): Promise<Task> {
     try {
       const task = await this.prisma.task.create({
         data: {
@@ -19,7 +16,7 @@ export class TaskService {
         },
       });
 
-      return { message: 'Task created sucessfully!', task };
+      return task;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2003') {
@@ -34,10 +31,7 @@ export class TaskService {
     }
   }
 
-  async updateTask(
-    data: Prisma.TaskUpdateInput,
-    id: string,
-  ): Promise<{ message: string; taskUpdated: Task }> {
+  async updateTask(data: Prisma.TaskUpdateInput, id: string): Promise<Task> {
     try {
       const taskUpdated = await this.prisma.task.update({
         where: {
@@ -46,7 +40,7 @@ export class TaskService {
         data,
       });
 
-      return { message: 'Task updated sucessfully!', taskUpdated };
+      return taskUpdated;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -61,7 +55,7 @@ export class TaskService {
     }
   }
 
-  async findTask(id: string): Promise<{ message: string; task: Task }> {
+  async findTask(id: string): Promise<Task> {
     try {
       const task = await this.prisma.task.findUnique({
         where: {
@@ -81,7 +75,7 @@ export class TaskService {
         throw new HttpException('Task not found.', HttpStatus.NOT_FOUND);
       }
 
-      return { message: 'Task found successfully!', task };
+      return task;
     } catch (error) {
       throw new HttpException(
         { message: 'Failed to find task.', error: error.message },
@@ -90,9 +84,7 @@ export class TaskService {
     }
   }
 
-  async findAllTasks(
-    listId: string,
-  ): Promise<{ message: string; tasks: Task[] }> {
+  async findAllTasks(listId: string): Promise<Task[]> {
     try {
       const tasks = await this.prisma.task.findMany({
         where: {
@@ -115,7 +107,7 @@ export class TaskService {
         );
       }
 
-      return { message: 'Tasks found successfully!', tasks };
+      return tasks;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2003') {

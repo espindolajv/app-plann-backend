@@ -7,10 +7,7 @@ import { CreateListDto, ListType, UpdateListDto } from './list.dtos';
 export class ListService {
   constructor(private prisma: PrismaService) {}
 
-  async createList(
-    data: CreateListDto,
-    userId: string,
-  ): Promise<{ message: string; data: List }> {
+  async createList(data: CreateListDto, userId: string): Promise<List> {
     try {
       const { name, description, workspaceId } = data;
 
@@ -33,7 +30,7 @@ export class ListService {
         },
       });
 
-      return { message: 'List created successfully!', data: list };
+      return list;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -48,10 +45,7 @@ export class ListService {
     }
   }
 
-  async updateList(
-    data: UpdateListDto,
-    id: string,
-  ): Promise<{ message: string; data: List }> {
+  async updateList(data: UpdateListDto, id: string): Promise<List> {
     try {
       const list = await this.prisma.list.update({
         where: {
@@ -60,7 +54,7 @@ export class ListService {
         data,
       });
 
-      return { message: 'List updated successfully!', data: list };
+      return list;
     } catch (err) {
       if (err.code === 'P2025') {
         throw new HttpException('List not found.', HttpStatus.NOT_FOUND);

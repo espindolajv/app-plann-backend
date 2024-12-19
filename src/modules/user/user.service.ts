@@ -41,7 +41,7 @@ export class UserService {
     where: Prisma.UserWhereUniqueInput;
     data: UpdateUserDto;
     password: string;
-  }): Promise<{ message: string; user: User }> {
+  }): Promise<User> {
     try {
       const { where, data, password } = updateUserData;
 
@@ -61,7 +61,7 @@ export class UserService {
 
       const userUpdated = await this.prisma.user.update({ where, data });
 
-      return { message: 'User updated successfully!', user: userUpdated };
+      return userUpdated;
     } catch (err) {
       throw new HttpException(
         { message: 'An error occurred while updating the user', error: err },
